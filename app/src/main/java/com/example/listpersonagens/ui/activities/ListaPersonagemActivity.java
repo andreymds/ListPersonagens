@@ -1,22 +1,23 @@
-package com.example.listpersonagens;
+package com.example.listpersonagens.ui.activities;
 
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.listpersonagens.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class ListaPersonagemActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_lista_personagem);
         List<String> personagem = new ArrayList<>(Arrays.asList("Alex","Ken","Ryu"));
 
         ListView listaDePersonagens = findViewById(R.id.activity_main_lista_personagem);
