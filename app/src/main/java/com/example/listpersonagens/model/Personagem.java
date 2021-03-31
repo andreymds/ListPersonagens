@@ -1,5 +1,7 @@
 package com.example.listpersonagens.model;
 
+import androidx.annotation.NonNull;
+
 public class Personagem {
 
     /*Traz a variável de fora*/
@@ -16,7 +18,7 @@ public class Personagem {
     }
 
     //transaciona as informações
-
+    @NonNull
     @Override
     public String toString() {
         return nome;
