@@ -19,11 +19,18 @@ import java.util.List;
 
 public class ListaPersonagemActivity extends AppCompatActivity {
 
+    //cria a classe para já tê-la no início do programa e receber as infos do formulário
+    private final PersonagemDAO dao = new PersonagemDAO();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_personagem); //determina uma tela para o contexto
         setTitle("Lista de Personagens"); //título superior da tela
+
+        //inicia o programa com personagens salvos
+        dao.salva(new Personagem("Ken", "1.80", "05061989"));
+        dao.salva(new Personagem("Ryu", "1.96", "28061995"));
 
         //List<String> personagem = new ArrayList<>(Arrays.asList("Alex","Ken","Ryu"));
 
@@ -47,20 +54,22 @@ public class ListaPersonagemActivity extends AppCompatActivity {
     @Override
     protected void onResume() { //persiste as informações adicionadas
         super.onResume();
-        PersonagemDAO dao = new PersonagemDAO(); //criação da classe que vai receber as informações
 
         //determina que a tela vai exibir a lista com todos os personagens criados
         ListView listaDePersonagens = findViewById(R.id.activity_main_lista_personagem);
         List<Personagem> personagens = dao.todos();
         listaDePersonagens.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, personagens));
 
-        listaDePersonagens.setOnItemClickListener(new AdapterView.OnItemClickListener(){ //reconhece o clique do usuário
+        listaDePersonagens.setOnItemClickListener(new AdapterView.OnItemClickListener(){ //retorna o clique do usuário
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int posicao, long id) {
                 Personagem personagemEscolhido = personagens.get(posicao); //pega o conteúdo do personagem selecionado
 
                 //abre infos do formulário do personagem selecionado
                 Intent vaiParaFormulario = new Intent(ListaPersonagemActivity.this, FormularioPersonagemActivity.class);
+
+                //leva a informação para outra parte do programa
+                vaiParaFormulario.putExtra("personagem", personagemEscolhido);
 
                 startActivity(vaiParaFormulario);
 
