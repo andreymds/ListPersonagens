@@ -14,23 +14,30 @@ public class PersonagemDAO {
     public void salva(Personagem personagemSalvo){
         personagemSalvo.setId(contadordeId);
         personagens.add(personagemSalvo);
+        atualizaId();
+    }
+
+    private void atualizaId() {
         contadordeId++;
     }
-    public void editar (Personagem personagem){
-        Personagem personagemEscolhido = null;
 
-        //verifica a lista de personagens
-        for (Personagem p:
-             personagens) {
-            if(p.getId() == personagem.getId()){
-                personagemEscolhido = p;
-            }
-        }
+    public void editar (Personagem personagem){
+        Personagem personagemEscolhido = buscarPersonagemId(personagem);
         if (personagemEscolhido != null){
             //verifica qual numerção que a numeração está indicando
             int posicaoDoPersonagem = personagens.indexOf(personagemEscolhido);
             personagens.set(posicaoDoPersonagem, personagem);
         }
+    }
+    private Personagem buscarPersonagemId(Personagem personagem) {
+        //verifica a lista de personagens
+        for (Personagem p:
+             personagens) {
+            if(p.getId() == personagem.getId()){
+                return p;
+            }
+        }
+        return null;
     }
     //busca e retorna a lista de todos personagens
     public List<Personagem> todos() {

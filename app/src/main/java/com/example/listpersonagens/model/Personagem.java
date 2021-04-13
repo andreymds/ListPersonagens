@@ -20,6 +20,10 @@ public class Personagem implements Serializable { //faz importação das depend�
         this.nascimento = nascimento;
     }
 
+    public Personagem(){
+        //possibilita enviar formulário vazio
+    }
+
     public String getNome() {
         return nome;
     }
@@ -58,4 +62,6 @@ public class Personagem implements Serializable { //faz importação das depend�
     public int getId(){
         return id;
     }
+
+    public boolean IdValido(){        return id > 0 ;    }
 }
