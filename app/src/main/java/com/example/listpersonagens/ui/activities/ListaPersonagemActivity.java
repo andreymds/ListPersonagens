@@ -2,11 +2,14 @@ package com.example.listpersonagens.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.listpersonagens.R;
@@ -24,6 +27,7 @@ public class ListaPersonagemActivity extends AppCompatActivity {
 
     //cria a classe para já tê-la no início do programa e receber as infos do formulário
     private final PersonagemDAO dao = new PersonagemDAO();
+    private ArrayAdapter<Personagem> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +35,7 @@ public class ListaPersonagemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_lista_personagem); //determina uma tela para o contexto
         setTitle(TITULO_APPBAR); //título superior da tela
         configuraFabNovoPersonagem();
+        configuraLista();
     }
 
     private void configuraFabNovoPersonagem() {
@@ -49,12 +54,33 @@ public class ListaPersonagemActivity extends AppCompatActivity {
     @Override
     protected void onResume() { //persiste as informações adicionadas
         super.onResume();
+        adapter.clear(); //limpa a lista
+        adapter.addAll(dao.todos()); //adiciona todos valores
+    }
 
+    //abre uma janela quando aperta o botão
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        menu.add("Remover");
+    }
+
+    //dá um retorno pro adapter sobre o clique
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        Personagem personagemEscolhido = adapter.getItem(menuInfo.position); //personagem selecionado pelo user
+        adapter.remove(personagemEscolhido); //remove o personagem selecionado
+        return super.onContextItemSelected(item);
+    }
+
+    private void configuraLista() {
         //determina que a tela vai exibir a lista com todos os personagens criados
         ListView listaDePersonagens = findViewById(R.id.activity_main_lista_personagem);
-        final List<Personagem> personagens = dao.todos();
-        listaDePersonagens(listaDePersonagens, personagens);
+        //final List<Personagem> personagens = dao.todos();
+        listaDePersonagens(listaDePersonagens);
         configuraItemPorClick(listaDePersonagens);
+        registerForContextMenu(listaDePersonagens);
     }
 
     private void configuraItemPorClick(ListView listaDePersonagens) {
@@ -77,8 +103,9 @@ public class ListaPersonagemActivity extends AppCompatActivity {
         startActivity(vaiParaFormulario);
     }
 
-    private void listaDePersonagens(ListView listaDePersonagens, List<Personagem> personagens) {
-        listaDePersonagens.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, personagens));
+    private void listaDePersonagens(ListView listaDePersonagens) {
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+        listaDePersonagens.setAdapter(adapter);
     }
 }
 
