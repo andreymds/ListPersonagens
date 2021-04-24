@@ -1,5 +1,6 @@
 package com.example.listpersonagens.ui.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -10,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.listpersonagens.R;
@@ -36,6 +38,7 @@ public class ListaPersonagemActivity extends AppCompatActivity {
         setTitle(TITULO_APPBAR); //título superior da tela
         configuraFabNovoPersonagem();
         configuraLista();
+
     }
 
     private void configuraFabNovoPersonagem() {
@@ -54,23 +57,49 @@ public class ListaPersonagemActivity extends AppCompatActivity {
     @Override
     protected void onResume() { //persiste as informações adicionadas
         super.onResume();
+        atualizaPersonagem();
+    }
+
+    private void atualizaPersonagem(){
         adapter.clear(); //limpa a lista
         adapter.addAll(dao.todos()); //adiciona todos valores
+    }
+
+    private void remove(Personagem personagem){
+        dao.remove(personagem);
+        adapter.remove(personagem);
     }
 
     //abre uma janela quando aperta o botão
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        menu.add("Remover");
+        getMenuInflater().inflate(R.menu.activity_lista_personagem_menu, menu); //popula menu com infos de fora
     }
 
     //dá um retorno pro adapter sobre o clique
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        Personagem personagemEscolhido = adapter.getItem(menuInfo.position); //personagem selecionado pelo user
-        adapter.remove(personagemEscolhido); //remove o personagem selecionado
+        return configuraMenu(item);
+    }
+
+    private boolean configuraMenu(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+        if(itemId == R.id.activity_lista_meu_personagem_remover){
+            new AlertDialog.Builder(this) //alerta de confimação de remoção de personagem
+                .setTitle("Removendo Personagem")
+                .setMessage("Tem certeza que deseja remover Personagem")
+                .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+                        Personagem personagemEscolhido = adapter.getItem(menuInfo.position); //personagem selecionado pelo user
+                        remove(personagemEscolhido); //remove o personagem selecionado
+                    }
+                })
+                .setNegativeButton("Não", null)
+                .show();
+        }
         return super.onContextItemSelected(item);
     }
 

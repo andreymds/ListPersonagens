@@ -43,4 +43,11 @@ public class PersonagemDAO {
     public List<Personagem> todos() {
         return new ArrayList<>(personagens);
     }
+
+    public void remove(Personagem personagem){
+        Personagem personagemDevolvido = buscarPersonagemId(personagem);
+        if(personagemDevolvido != null){
+            personagens.remove(personagemDevolvido);
+        }
+    }
 }
